@@ -2,3 +2,5 @@ baseURL = 'http://localhost:1313/'
 languageCode = 'sv-se'
 title = 'Mats Landholm'
 theme = 'ananke'
+[markup.goldmark.renderer]
+unsafe = true
