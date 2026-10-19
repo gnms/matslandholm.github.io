@@ -1,0 +1,60 @@
+
+name: Publicera Hugo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Hämta projektet
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Installera Hugo
+        env:
+          HUGO_VERSION: 0.168.0
+        run: |
+          wget -O /tmp/hugo.deb \
+            "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb"
+          sudo dpkg -i /tmp/hugo.deb
+
+      - name: Konfigurera GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Bygg webbplatsen
+        run: hugo --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
+
+      - name: Ladda upp webbplatsen
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./public
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Publicera webbplatsen
+        id: deployment
+        uses: actions/deploy-pages@v4
