@@ -43,9 +43,7 @@ Det intressanta är att säkerhetsarkitekturen inte i första hand beskriver vad
 
   <p>
 Är säkerhetsarkitekturen en separat arkitektur, eller är den egentligen bara ett sätt att betrakta systemarkitekturen utifrån ett säkerhetsperspektiv?
-
 Jag lutar åt det senare.
-
 Säkerhetsarkitekturen kan beskrivas separat, men den är inte frikopplad från systemets övriga arkitektur.
   </p>
 
