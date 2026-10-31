@@ -1,65 +1,52 @@
-
 +++
 date = '2026-10-22T20:50:00+02:00'
 draft = true
-title = 'Common Cause Analysis – varför räcker det inte med två datorer?'
+title = 'Common Cause Analysis – behövs två datorer?'
 +++
 
-När man arbetar med säkerhetskritiska system får man ibland höra att man måste ha dubblerad hårdvara. Två separata datorer, och dessutom ska hårdvaran vara utvecklad enligt någon särskild standard.
-Men varför?
+Vi har tidigare pratat om <a href="/system_safety/fault_tree/">felträd</a> och <a href="/system_safety/redundans/">redundans</a>, men hur säkert är egentligen ett system med dubblerade funktioner? Tänk om övervakaren drabbas av samma fel som den som ska övervakas?
 
-Det är en fråga jag har ställt flera gånger genom åren, utan att alltid få något riktigt bra svar.
-Om problemet exempelvis är att två program kan skriva över varandras minne, borde man inte kunna lösa det genom att separera deras minnesområden?
-Man skulle kanske kunna använda olika delar av minnet eller låta hårdvaran skydda programmen från varandra.
-Men svaret har ofta varit detsamma:
+I vår <a href="/system_safety/fault_tree/">felträdsanalys</a> kom vi fram till en säkerhetsarkitektur där vi förbättrade säkerheten genom att lägga till en övervakare.
 
-*Nej, det måste vara två separata datorer.*
+<img src="/images/system_safety/car_system_2.png"
+  alt="Styrsystem med styrning och övervakning"
+  style="float: right; width: 400px; max-width: 100%; margin: 15px 0 15px 20px; border-radius: 8px;">
 
-Fortfarande utan någon riktigt bra förklaring till varför.
+Men tänk om det finns ett konstruktionsfel i en komponent som gör att den under vissa förutsättningar lämnar felaktiga värden?
 
-## Två datorer – men är de verkligen oberoende?
-Tänk dig att vi har ett säkerhetskritiskt system med två datorer som utför samma beräkning.
-Tanken är att om den ena datorn går sönder ska den andra kunna fortsätta fungera.
-Det låter ju bra.
-Men vad händer om båda datorerna kör samma programvara och det finns ett fel i programmet?
-Om samma förutsättningar uppstår kan båda datorerna drabbas av samma fel.
-Eller om båda datorerna läser information från samma givare och givaren börjar lämna felaktiga värden?
-Då hjälper det kanske inte att vi har två datorer. Båda kan fatta samma felaktiga beslut.
-Vi har byggt [redundans](/system_safety/redundans/), men inte nödvändigtvis oberoende.
+Om både styrningen och övervakaren använder samma information kan ett enda fel påverka båda funktionerna.
 
-## Common Cause Analysis
-Det var när jag kom i kontakt med begreppet *Common Cause Analysis*, CCA, som jag började förstå varför det inte alltid räcker med redundans.
-Enkelt uttryckt handlar analysen om att identifiera gemensamma orsaker och beroenden som kan göra att flera delar av ett system fallerar.
-Vi tittar på våra redundanta system och ställer frågor som:
-- Använder de samma programvara?
-- Läser de från samma givare?
-- Delar de strömförsörjning?
-- Kan ett fel i en komponent påverka båda systemen?
-- Finns det yttre händelser som kan slå ut båda samtidigt?
+I felträdet har vi kanske antagit att styrningen och övervakaren fallerar oberoende av varandra. Men om ett enda fel kan påverka båda, blir vår beräknade säkerhet alltför optimistisk.
 
-Det viktiga är att vi inte bara tittar på vad som kan gå fel i varje enskild komponent, utan också vad som kan göra att flera komponenter fallerar tillsammans.
+**Common Cause Analysis**
 
-## Måste vi då alltid ha två separata datorer?
-Nej, inte nödvändigtvis.
-Det beror på vilka fel vi behöver skydda oss mot och vilka säkerhetskrav systemet ska uppfylla.
-Om vi kan visa att två funktioner på samma dator är tillräckligt oberoende för de fel vi behöver hantera, kanske vi inte behöver två fysiska datorer.
-Men om analysen visar att ett fel i exempelvis processorn, minnet eller strömförsörjningen kan slå ut båda funktionerna, då kanske fysisk separation är nödvändig.
-Och även om vi använder två datorer kan vi behöva separera andra saker, exempelvis givare eller strömförsörjning.
-**Det är alltså inte antalet datorer som avgör om lösningen är säker, utan vilka fel arkitekturen faktiskt kan hantera.**
+Det är här Common Cause Analysis (CCA) kommer in, CCA handlar om att identifiera gemensamma felorsaker och beroenden som kan påverka flera funktioner samtidigt.
+Om vi analyserar vårt styrsystem upptäcker vi att styrningen och övervakaren delar flera komponenter:
+- Samma givare i ratten.
+- Samma vinkelgivare vid hjulen.
+- Samma dator och därmed hårdvara och operativsystem.
 
-## Hur säker är tillräckligt säker?
-Mycket inom systemsäkerhet handlar om att kunna visa att de [säkerhetsmekanismer](/system_safety/safety_mechanism/) vi inför verkligen ger det skydd vi förväntar oss.
-Det innebär bland annat att vi måste bedöma sannolikheten för olika fel och vilka konsekvenser de kan få.
-I vissa sammanhang arbetar man med mycket låga sannolikheter, exempelvis 10⁻⁶ eller 10⁻⁹ per timme för vissa typer av farliga fel eller händelser.
-Vilka nivåer som är acceptabla beror på systemet, riskerna och de krav som gäller.
-En Common Cause Analysis hjälper oss att identifiera beroenden som annars kan göra våra beräkningar alltför optimistiska.
-Om vi exempelvis antar att två datorer fallerar oberoende av varandra, men båda kan slås ut av samma fel, då håller inte längre vårt antagande.
+Om exempelvis vinkelgivaren lämnar ett felaktigt värde kan både styrningen och övervakaren använda samma felaktiga information. Då finns risken att övervakaren inte upptäcker felet.
+Vi har alltså en övervakare, men den är inte tillräckligt oberoende för att upptäcka alla fel vi kanske vill skydda oss mot.
+Vad gör vi åt det?
 
-## Analysera istället för att bara följa en regel
-Det är egentligen detta som jag tycker är det intressanta.
-Istället för att kategoriskt säga att ett säkerhetskritiskt system måste ha två separata datorer borde vi börja med att fråga:
-**Vilka fel måste systemet kunna hantera, och hur kan vi visa att vår arkitektur klarar dem?**
-Ibland blir svaret två separata datorer. Ibland krävs ännu mer separation. Och ibland kan vi visa att en enklare lösning är tillräcklig.
+Efter analysen kanske vi kommer fram till att systemet behöver förändras.
+
+Vi skulle exempelvis kunna:
+- Använda en annan typ av givare för övervakningen av rattens vinkel.
+- Montera övervakarens vinkelgivare vid hjulen spegelvänt, så att givarna arbetar i motsatta riktningar.
+- Flytta övervakningen till en egen dator, exempelvis en PLC med annan hårdvara och programvara.
+
+<img src="/images/system_safety/car_system_3.png"
+  alt="Styrsystem med separat övervakning och olika typer av givare"
+  style="float: right; width: 400px; max-width: 100%; margin: 15px 0 15px 20px; border-radius: 8px;">
+På så sätt kan vi minska risken för vissa gemensamma fel. Men även olika givare kan påverkas av samma mekaniska fel eller yttre störningar.
+Men är systemet säkert nu?
+
+Inte nödvändigtvis. Vi behöver fortfarande analysera exempelvis strömförsörjningen och hur ett fel i styrningen faktiskt ska hanteras.
+Och kanske visar analysen att vi inte behöver separera allt. Det beror på vilka fel vi måste kunna hantera och vilka säkerhetskrav som gäller.
+
+<div style="clear: both;"></div>
 
 <div style="border-left: 4px solid #64748b;
             background-color: #f1f5f9;
@@ -68,11 +55,18 @@ Ibland blir svaret två separata datorer. Ibland krävs ännu mer separation. Oc
             border-radius: 6px;
             color: #334155;">
 
-  <strong>Avslutningsvis</strong>
+<strong>Avslutningsvis</strong>
 
-  <p>
-    För mig är det just det som är poängen med säkerhetsanalyser.
-    Att förstå varför vi inför en säkerhetsmekanism, istället för att bara göra som vi alltid har gjort.
-  </p>
+<p>
+Vilka fel måste systemet kunna hantera, och hur kan vi visa att vår <a href="/system_safety/safety_architecture/">säkerhetsarkitektur</a> klarar dem?
+</p>
+
+<p>
+Ibland krävs separata datorer, ibland ännu mer separation och ibland kan en enklare lösning vara tillräcklig.
+</p>
+
+<p>
+För mig handlar säkerhetsanalyser om att förstå varför vi inför en <a href="/system_safety/safety_mechanism/">säkerhetsmekanism</a>, istället för att bara göra som vi alltid har gjort.
+</p>
 
 </div>

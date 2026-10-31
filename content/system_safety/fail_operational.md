@@ -38,7 +38,7 @@ Vi har alltså både stoppat vissa funktioner och låtit andra fortsätta.
 
   <p>
 Fail-operational handlar inte om att allt måste fortsätta fungera, utan om att de funktioner som måste upprätthållas ska kunna fortsätta trots fel.
-Det kräver ofta redundans, alltså att alternativa komponenter eller system kan ta över när något går sönder.
+Det kräver ofta <a href="/system_safety/redundans/">redundans</a>, alltså att alternativa komponenter eller system kan ta över när något går sönder.
 
   </p>
 

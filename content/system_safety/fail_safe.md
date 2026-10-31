@@ -4,7 +4,7 @@ draft = true
 title = 'Fail-safe - när något går fel ska det inte bli farligt'
 +++
 
-Vi har tidigare beskrivit hur en säkerhetsmekanism kan upptäcka och hantera fel.
+Vi har tidigare beskrivit hur en <a href="/system_safety/safety_mechanism/">säkerhetsmekanism</a> kan upptäcka och hantera fel.
 Men vad ska systemet göra när något går fel?
 
 En möjlighet är att försätta systemet i ett säkert tillstånd. Det är grundtanken med fail-safe.
@@ -37,7 +37,7 @@ Fail-safe handlar alltså om att systemet ska hamna i ett säkert tillstånd nä
 I vårt exempel innebär det att stoppa maskinens farliga rörelser.
 Men tänk om det istället är farligt att stanna?
 Då behöver vi en annan lösning.
-Läs vidare: Fail-operational – när det inte är säkert att stanna.
+Läs vidare: <a href="/system_safety/fail_operational/">Fail-operational – när det inte är säkert att stanna.</a>
   </p>
 
 </div>

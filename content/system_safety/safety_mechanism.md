@@ -14,6 +14,9 @@ Tänk dig ett system där något kan gå fel och leda till en farlig situation.
 Vi vill kunna upptäcka att något är på väg att hända och göra något åt det innan någon skadas.
 
 En säkerhetsmekanism kan då bestå av tre delar:
+- **Övervaka** – samla in information och upptäcka fel eller farliga tillstånd.
+- **Reagera** – avgöra om något behöver göras och vilken åtgärd som ska vidtas.
+- **Agera** – genomföra åtgärden så att systemet förblir säkert.
 <img src="/images/system_safety/safety_mechanism.png"
      alt="safety mechanism">
 
